@@ -157,6 +157,7 @@ The following entities are created:
 | Okta App UserGroup | `okta_app_user_group` | `UserGroup`          |
 | Okta Application   | `okta_application`    | `Application`        |
 | Okta Factor Device | `mfa_device`          | `Key`, `AccessKey`   |
+| Okta Policy        | `okta_policy`         | `Policy`             |
 | Okta Role          | `okta_role`           | `AccessRole`         |
 | Okta Rule          | `okta_rule`           | `Configuration`      |
 | Okta Service       | `okta_service`        | `Service`, `Control` |
@@ -171,12 +172,15 @@ The following relationships are created:
 | -------------------------------------- | --------------------- | --------------------- |
 | `okta_account`                         | **HAS**               | `okta_application`    |
 | `okta_account`                         | **HAS**               | `okta_user_group`     |
+| `okta_account`                         | **HAS**               | `okta_policy`         |
 | `okta_account`                         | **HAS**               | `okta_rule`           |
 | `okta_account`                         | **HAS**               | `okta_service`        |
 | `okta_account`                         | **HAS**               | `okta_user`           |
 | `okta_app_user_group`                  | **HAS**               | `okta_user`           |
+| `okta_application`                     | **ASSIGNED**          | `okta_policy`         |
 | `okta_user_group, okta_app_user_group` | **ASSIGNED**          | `okta_application`    |
 | `okta_user_group`                      | **HAS**               | `okta_user`           |
+| `okta_rule`                            | **ASSIGNED**          | `okta_policy`         |
 | `okta_rule`                            | **MANAGES**           | `okta_user_group`     |
 | `okta_user`                            | **ASSIGNED**          | `okta_application`    |
 | `okta_user`                            | **ASSIGNED**          | `aws_iam_role`        |
