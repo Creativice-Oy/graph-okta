@@ -26,6 +26,8 @@ import {
   isMultiInstanceApp,
 } from '../util/knownVendors';
 
+import { getPolicyIdFromUrl } from '../util/getPolicyIdFromUrl';
+
 interface IntegrationInstance {
   id: string;
   name: string;
@@ -43,6 +45,8 @@ export function createApplicationEntity(
 
   let imageUrl;
   let loginUrl;
+  let accessPolicyUrl;
+  let profileEnrollmentUrl;
 
   if (data._links?.logo) {
     imageUrl = lodash.flatten([data._links.logo])[0].href;
@@ -52,6 +56,14 @@ export function createApplicationEntity(
     const links = lodash.flatten([data._links.appLinks]);
     const link = links.find((l) => l.name === 'login') || links[0];
     loginUrl = link && link.href;
+  }
+
+  if (data._links?.accessPolicy) {
+    accessPolicyUrl = data._links.accessPolicy.href;
+  }
+
+  if (data._links?.profileEnrollment) {
+    profileEnrollmentUrl = data._links.profileEnrollment.href;
   }
 
   const oktaAccountInfo = getOktaAccountInfo(instance);
@@ -85,6 +97,8 @@ export function createApplicationEntity(
         webLink,
         imageUrl,
         loginUrl,
+        accessPolicy: getPolicyIdFromUrl(accessPolicyUrl),
+        profileEnrollment: getPolicyIdFromUrl(profileEnrollmentUrl),
       },
     },
   }) as StandardizedOktaApplication;
