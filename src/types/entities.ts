@@ -113,3 +113,16 @@ export interface StandardizedOktaFactor extends Entity {
   lastVerifiedOn?: number;
   authenticatorName?: string;
 }
+
+export interface StandardizedOktaPolicy extends Entity {
+  id: string;
+  type: string;
+  name: string;
+  system: boolean;
+  description: string;
+  priortiy: number;
+  status: string;
+  created: string;
+  lastUpdated: string;
+  _links?: any;
+}

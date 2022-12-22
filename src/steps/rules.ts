@@ -6,16 +6,21 @@ import {
   IntegrationStepExecutionContext,
   RelationshipClass,
   parseTimePropertyValue,
+  getRawData,
 } from '@jupiterone/integration-sdk-core';
 import { createAPIClient } from '../client';
 import { IntegrationConfig } from '../config';
+import { OktaPolicy } from '../okta/types';
 import {
   DATA_ACCOUNT_ENTITY,
   Entities,
   Relationships,
   Steps,
 } from './constants';
-
+import {
+  createPolicyRuleEntity,
+  createPolicyRulePolicyRelationship,
+} from '../converters/rule';
 export async function fetchRules({
   instance,
   jobState,
@@ -79,6 +84,38 @@ export async function fetchRules({
   });
 }
 
+export async function fetchPolicyRules({
+  instance,
+  jobState,
+  logger,
+}: IntegrationStepExecutionContext<IntegrationConfig>) {
+  const apiClient = createAPIClient(instance.config, logger);
+
+  await jobState.iterateEntities(
+    { _type: Entities.POLICY._type },
+    async (policyEntity) => {
+      const policy = getRawData<OktaPolicy>(policyEntity);
+
+      if (!policy) {
+        logger.error(
+          `Can not get raw data from policy entity: ${policyEntity._key}`,
+        );
+      }
+
+      if (policy) {
+        await apiClient.iteratePolicyRules(policy.id, async (policyRule) => {
+          const policyRuleEntity = createPolicyRuleEntity(policyRule);
+          await jobState.addEntity(policyRuleEntity);
+
+          await jobState.addRelationship(
+            createPolicyRulePolicyRelationship(policyRuleEntity, policyEntity),
+          );
+        });
+      }
+    },
+  );
+}
+
 export const ruleSteps: IntegrationStep<IntegrationConfig>[] = [
   {
     id: Steps.RULES,
@@ -90,5 +127,16 @@ export const ruleSteps: IntegrationStep<IntegrationConfig>[] = [
     ],
     dependsOn: [Steps.USERS, Steps.GROUPS],
     executionHandler: fetchRules,
+  },
+  {
+    id: Steps.POLICY_RULES,
+    name: 'Fetch Policy Rules',
+    entities: [Entities.RULE],
+    relationships: [
+      Relationships.ACCOUNT_HAS_RULE,
+      Relationships.RULE_ASSIGNED_POLICY,
+    ],
+    dependsOn: [Steps.POLICIES],
+    executionHandler: fetchPolicyRules,
   },
 ];

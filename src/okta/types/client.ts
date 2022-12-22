@@ -9,6 +9,7 @@ import { OktaUser } from './users';
 import { OktaRule } from './rules';
 import { OktaRole } from './roles';
 import { OktaLogEvent } from './logs';
+import { OktaPolicy } from './policies';
 import { OrgOktaSupportSettingsObj } from './support';
 import { RequestExecutorWithEarlyRateLimiting } from '../createOktaClient';
 
@@ -40,6 +41,7 @@ export interface OktaQueryParams {
   search?: string;
   since?: string;
   expand?: string;
+  type?: string;
 }
 
 /**
@@ -115,6 +117,17 @@ export interface OktaClient {
     groupId: string,
     queryParameters?: OktaQueryParams,
   ) => OktaCollection<OktaRole>;
+
+  // [API Endpoint]: https://developer.okta.com/docs/reference/api/policy/#get-all-policies-by-type
+  listPolicies: (
+    queryParameters?: OktaQueryParams,
+  ) => OktaCollection<OktaPolicy>;
+
+  // [API Endpoint]: https://developer.okta.com/docs/reference/api/system-log/#get-started
+  listPolicyRules: (
+    policyId: string,
+    queryParameters?: OktaQueryParams,
+  ) => OktaCollection<OktaRule>;
 
   // [API Endpoint]: https://developer.okta.com/docs/reference/api/system-log/#get-started
   getLogs: (queryParameters?: OktaQueryParams) => OktaCollection<OktaLogEvent>;

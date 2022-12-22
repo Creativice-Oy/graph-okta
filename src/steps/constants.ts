@@ -14,10 +14,13 @@ export const Steps = {
   APPLICATIONS: 'fetch-applications',
   MFA_DEVICES: 'fetch-devices',
   RULES: 'fetch-rules',
+  POLICY_RULES: 'fetch-policy-rules',
   ROLES: 'fetch-roles',
+  POLICIES: 'fetch-policies',
   APPLICATION_CREATION: 'build-application-creation-relationship',
   APP_USER_GROUP_USERS_RELATIONSHIP: 'build-app-user-group-users-relationships',
   USER_GROUP_USERS_RELATIONSHIP: 'build-user-group-users-relationships',
+  APPLICATION_POLICY_RELATIONSHIP: 'build-application-policy-relationships',
 };
 
 export const Entities: Record<
@@ -29,7 +32,8 @@ export const Entities: Record<
   | 'APPLICATION'
   | 'MFA_DEVICE'
   | 'RULE'
-  | 'ROLE',
+  | 'ROLE'
+  | 'POLICY',
   StepEntityMetadata
 > = {
   ACCOUNT: {
@@ -77,6 +81,11 @@ export const Entities: Record<
     _type: 'okta_role',
     _class: ['AccessRole'],
   },
+  POLICY: {
+    resourceName: 'Okta Policy',
+    _type: 'okta_policy',
+    _class: ['Policy'],
+  },
 };
 
 export const Relationships: Record<
@@ -85,6 +94,7 @@ export const Relationships: Record<
   | 'ACCOUNT_HAS_USER_GROUP'
   | 'ACCOUNT_HAS_APP_USER_GROUP'
   | 'ACCOUNT_HAS_RULE'
+  | 'ACCOUNT_HAS_POLICY'
   | 'USER_GROUP_HAS_USER'
   | 'APP_USER_GROUP_HAS_USER'
   | 'ACCOUNT_HAS_APPLICATION'
@@ -96,7 +106,9 @@ export const Relationships: Record<
   | 'USER_GROUP_ASSIGNED_AWS_IAM_ROLE'
   | 'USER_ASSIGNED_MFA_DEVICE'
   | 'RULE_MANAGES_USER_GROUP'
-  | 'USER_CREATED_APPLICATION',
+  | 'USER_CREATED_APPLICATION'
+  | 'APPLICATION_ASSIGNED_POLICY'
+  | 'RULE_ASSIGNED_POLICY',
   StepRelationshipMetadata
 > = {
   ACCOUNT_HAS_SERVICE: {
@@ -128,6 +140,12 @@ export const Relationships: Record<
     _class: RelationshipClass.HAS,
     sourceType: Entities.ACCOUNT._type,
     targetType: Entities.RULE._type,
+  },
+  ACCOUNT_HAS_POLICY: {
+    _type: 'okta_account_has_policy',
+    _class: RelationshipClass.HAS,
+    sourceType: Entities.ACCOUNT._type,
+    targetType: Entities.POLICY._type,
   },
   USER_GROUP_HAS_USER: {
     _type: 'okta_group_has_user',
@@ -206,6 +224,17 @@ export const Relationships: Record<
     _class: RelationshipClass.CREATED,
     sourceType: Entities.USER._type,
     targetType: Entities.APPLICATION._type,
-    partial: true,
+  },
+  APPLICATION_ASSIGNED_POLICY: {
+    _type: 'okta_application_assigned_policy',
+    _class: RelationshipClass.ASSIGNED,
+    sourceType: Entities.APPLICATION._type,
+    targetType: Entities.POLICY._type,
+  },
+  RULE_ASSIGNED_POLICY: {
+    _type: 'okta_rule_assigned_policy',
+    _class: RelationshipClass.ASSIGNED,
+    sourceType: Entities.RULE._type,
+    targetType: Entities.POLICY._type,
   },
 };

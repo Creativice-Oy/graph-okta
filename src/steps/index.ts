@@ -6,6 +6,7 @@ import { applicationSteps } from './applications';
 import { ruleSteps } from './rules';
 import { roleSteps } from './roles';
 import { applicationCreationSteps } from './applicationCreation';
+import { policySteps } from './policies';
 
 const integrationSteps = [
   ...accountSteps,
@@ -16,6 +17,7 @@ const integrationSteps = [
   ...ruleSteps,
   ...roleSteps,
   ...applicationCreationSteps,
+  ...policySteps,
 ];
 
 export { integrationSteps };
