@@ -9,7 +9,6 @@ import {
 
 import { OktaRule } from '../okta/types';
 import { Entities, Relationships } from '../steps/constants';
-import { StandardizedOktaFactor } from '../types';
 
 export function createPolicyRuleEntity(policyRule: OktaRule): Entity {
   return createIntegrationEntity({
@@ -21,8 +20,8 @@ export function createPolicyRuleEntity(policyRule: OktaRule): Entity {
         _class: Entities.RULE._class,
         id: policyRule.id,
         name: policyRule.name,
-        ruleType: policyRule.type, //example: 'group_rule', 'policy_rule'
-        status: policyRule.status.toLowerCase(), //example: 'ACTIVE' or 'INACTIVE'
+        ruleType: policyRule.type,
+        status: policyRule.status.toLowerCase(),
         created: parseTimePropertyValue(policyRule.created)!,
         createdOn: parseTimePropertyValue(policyRule.created)!,
         lastUpdated: parseTimePropertyValue(policyRule.lastUpdated)!,

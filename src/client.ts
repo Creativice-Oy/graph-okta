@@ -20,7 +20,7 @@ import {
   OktaRole,
   OktaLogEvent,
 } from './okta/types';
-import { OktaPolicy, OktaPolicyType } from './okta/types/policies';
+import { OktaPolicy } from './okta/types/policies';
 
 const NINETY_DAYS_AGO = 90 * 24 * 60 * 60 * 1000;
 

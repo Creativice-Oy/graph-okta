@@ -1,5 +1,3 @@
-import * as url from 'url';
-
 import {
   createDirectRelationship,
   createIntegrationEntity,
@@ -9,21 +7,9 @@ import {
   RelationshipClass,
 } from '@jupiterone/integration-sdk-core';
 
-/**
- * The entity type for Okta user groups having `type: 'OKTA_GROUP'` or
- * `type: 'BUILT_IN'`.
- *
- * See https://developer.okta.com/docs/api/resources/groups#group-type
- */
 import { OktaPolicy } from '../okta/types';
 import { Entities, Relationships } from '../steps/constants';
-import {
-  OktaIntegrationConfig,
-  StandardizedOktaPolicy,
-  StandardizedOktaAccount,
-  StandardizedOktaUserGroup,
-} from '../types';
-import getOktaAccountAdminUrl from '../util/getOktaAccountAdminUrl';
+import { StandardizedOktaPolicy, StandardizedOktaAccount } from '../types';
 
 export function createPolicyEntity(data: OktaPolicy): Entity {
   if (data.type == 'PASSWORD') {
