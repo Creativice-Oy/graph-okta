@@ -20,6 +20,7 @@ import {
   OktaRole,
   OktaLogEvent,
 } from './okta/types';
+import { OktaPolicy } from './okta/types/policies';
 
 const NINETY_DAYS_AGO = 90 * 24 * 60 * 60 * 1000;
 
@@ -366,6 +367,63 @@ export class APIClient {
     } catch (err) {
       //per https://developer.okta.com/docs/reference/error-codes/
       if (err.status === 403) {
+        throw new IntegrationProviderAuthorizationError({
+          cause: err,
+          endpoint: err.url,
+          status: err.status,
+          statusText: err.errorSummary,
+        });
+      } else {
+        throw err;
+      }
+    }
+  }
+
+  public async iteratePolicies(
+    policyType: string,
+    iteratee: ResourceIteratee<OktaPolicy>,
+  ): Promise<void> {
+    try {
+      await this.oktaClient
+        .listPolicies({
+          // Maximum is 500, default is 50 if not specified:
+          //
+          // See: https://developer.okta.com/docs/reference/api/apps/#list-users-assigned-to-application
+          type: policyType,
+        })
+        .each(iteratee);
+    } catch (err) {
+      //per https://developer.okta.com/docs/reference/error-codes/
+      if (/\/api\/v1\/policies/.test(err.url) && err.status === 400) {
+        this.logger.info(
+          `Policy type: ${policyType} not available for classic engine. Skipping processing...`,
+        );
+      } else if (err.status === 403) {
+        throw new IntegrationProviderAuthorizationError({
+          cause: err,
+          endpoint: err.url,
+          status: err.status,
+          statusText: err.errorSummary,
+        });
+      } else {
+        throw err;
+      }
+    }
+  }
+
+  public async iteratePolicyRules(
+    policyId: string,
+    iteratee: ResourceIteratee<OktaRule>,
+  ): Promise<void> {
+    try {
+      await this.oktaClient.listPolicyRules(policyId).each(iteratee);
+    } catch (err) {
+      //per https://developer.okta.com/docs/reference/error-codes/
+      if (/\/api\/v1\/policies/.test(err.url) && err.status === 400) {
+        this.logger.info(
+          'Rules not enabled for this account. Skipping processing of Okta Rules.',
+        );
+      } else if (err.status === 403) {
         throw new IntegrationProviderAuthorizationError({
           cause: err,
           endpoint: err.url,

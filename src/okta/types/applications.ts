@@ -24,6 +24,9 @@ export interface OktaApplicationLinks {
   logo?: OktaApplicationLink | OktaApplicationLink[];
   users?: OktaApplicationLink | OktaApplicationLink[];
   deactivate?: OktaApplicationLink | OktaApplicationLink[];
+
+  profileEnrollment?: OktaApplicationLink;
+  accessPolicy?: OktaApplicationLink;
 }
 
 export interface OktaApplication extends OktaResource {
@@ -39,6 +42,12 @@ export interface OktaApplication extends OktaResource {
   features?: string[];
   settings?: OktaApplicationSettings;
   _links?: OktaApplicationLinks;
+  accessPolicy?: {
+    href: string;
+  };
+  profileEnrollment?: {
+    href: string;
+  };
 }
 
 export interface OktaApplicationUser extends OktaResource {
