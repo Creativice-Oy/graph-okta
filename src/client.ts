@@ -394,7 +394,11 @@ export class APIClient {
         .each(iteratee);
     } catch (err) {
       //per https://developer.okta.com/docs/reference/error-codes/
-      if (err.status === 403) {
+      if (/\/api\/v1\/policies/.test(err.url) && err.status === 400) {
+        this.logger.info(
+          `Policy type: ${policyType} not available for classic engine. Skipping processing...`,
+        );
+      } else if (err.status === 403) {
         throw new IntegrationProviderAuthorizationError({
           cause: err,
           endpoint: err.url,

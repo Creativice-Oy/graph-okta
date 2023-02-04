@@ -45,8 +45,6 @@ export function createApplicationEntity(
 
   let imageUrl;
   let loginUrl;
-  let accessPolicyUrl;
-  let profileEnrollmentUrl;
 
   if (data._links?.logo) {
     imageUrl = lodash.flatten([data._links.logo])[0].href;
@@ -58,13 +56,12 @@ export function createApplicationEntity(
     loginUrl = link && link.href;
   }
 
-  if (data._links?.accessPolicy) {
-    accessPolicyUrl = data._links.accessPolicy.href;
-  }
-
-  if (data._links?.profileEnrollment) {
-    profileEnrollmentUrl = data._links.profileEnrollment.href;
-  }
+  const accessPolicyUrl = data._links?.accessPolicy
+    ? data._links.accessPolicy.href
+    : '';
+  const profileEnrollmentUrl = data._links?.profileEnrollment
+    ? data._links.profileEnrollment.href
+    : '';
 
   const oktaAccountInfo = getOktaAccountInfo(instance);
   const appShortName = buildAppShortName(oktaAccountInfo, data.name);

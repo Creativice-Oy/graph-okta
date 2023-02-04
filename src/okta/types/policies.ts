@@ -6,7 +6,7 @@ export interface OktaPolicy extends OktaResource {
   name: string;
   system: boolean;
   description: string;
-  priortiy: number;
+  priority: number;
   status: string;
   settings: any;
   created: string;
@@ -18,8 +18,8 @@ export enum OktaPolicyType {
   OKTA_SIGN_ON = 'OKTA_SIGN_ON',
   PASSWORD = 'PASSWORD',
   MFA_ENROLL = 'MFA_ENROLL',
-  ACCESS_POLICY = 'ACCESS_POLICY',
   IDP_DISCOVERY = 'IDP_DISCOVERY',
+  ACCESS_POLICY = 'ACCESS_POLICY',
   PROFILE_ENROLLMENT = 'PROFILE_ENROLLMENT',
 }
 
